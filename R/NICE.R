@@ -3,9 +3,13 @@
 #' @param corr_m correlation matrix
 #' @param thres threshold
 #'
-#' @returns Cindx:    the cluster index of every non-isolated node
-#' @returns CID:     the cluster index of every cluster in a power descending order. i.e. CID(1) will be the cluster index of the most concentrated cluster
-#' @returns Clist:   the reordered node index, nodes in the same cluster are permuted together.
+#' @return Cindx: the cluster index of every non-isolated node
+#' @return CID: the cluster index of every cluster in a power 
+#' descending order. i.e. CID(1) will be the cluster index of the 
+#' most concentrated cluster
+#' @return Clist: the reordered node index, nodes in the same 
+#' cluster are permuted together.
+#' @return K_selected: K 
 #' 
 #' 
 #' @export

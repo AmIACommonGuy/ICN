@@ -1,5 +1,7 @@
 ### Data Simulation  ####
-
+library(matlab)
+library(gplots)
+library(rARPACK)
 ## Simulate Two Communities (100 nodes)
 
 # Simulate true corr matrix
