@@ -9,7 +9,7 @@
 #' most concentrated cluster
 #' @return Clist: the reordered node index, nodes in the same 
 #' cluster are permuted together.
-#' @return K_selected: K 
+#' @return K_selected: number of communities identified
 #' 
 #' 
 #' @export

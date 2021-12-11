@@ -12,13 +12,19 @@ if (length(args)==0) {
   args[2] = "out.txt"
 }
 
-# default input is clust.rds
-nice.res = readRDS(clust.rds)
-K = nice.res$K_selected
+# default input is clust.rds; perform post processing
+NICE.res = readRDS(clust.rds)
+NICER.res = NICER(NICE.res)
+
+# find number of communities
+K = NICER.res$K
+K.ind = NICER.res$K.ind
 
 # find community indices
 comm.ind = vector(mode = "list", length = K)
-comm.ind = 
+for (ind in K.ind){
+  comm.ind[ind] = which(NICE$Cindx == ind)
+}
 
 # find all pairwise communities: 
 pairs = ICN::lst_pairs(K)
