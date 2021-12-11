@@ -4,7 +4,7 @@
 #' matrices 
 #' 
 #' @param s G(Vc, Vc') matrix distribution to test
-#' @param null vector to sample null distributions (ALL singleton edge weights)
+#' @param null vector to sample null distributions (singleton indices)
 #' @param true_dist Singleton matrix
 #' @param a Significant level alpha. Default is 0.05
 #' @param width maxinum number of nearest neighbors to search (k)
@@ -20,8 +20,8 @@ KLtest = function(s, null, true_dist, a = 0.05, width){
   t_kl = rep(NA, 1000)
   
   for (i in 1:1000){
-    t = sample(null, length(s), TRUE)
-    t_kl[i] = KL.divergence(t, true_dist, width)
+    t = sample(null, dim(s)[2], TRUE)
+    t_kl[i] = KL.divergence(t, true_dist[t, t], width)
   }
   
   P = sum(t_kl > s_kl) / length(t_kl)
