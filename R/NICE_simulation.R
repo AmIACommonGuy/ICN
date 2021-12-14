@@ -36,6 +36,8 @@ heatmap.2(simu1_shuf, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.c
           keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none")
 
 result = NICE(simu1_shuf, 0.2)
+saveRDS(result, file = "data/cluster.rds")
+saveRDS(simu1_shuf, file = "data/shuffle.rds")
 system.time(NICE(simu1_shuf, 0.2))
 
 # Run simulation again when encounter error
