@@ -1,0 +1,25 @@
+Package: ICN
+Title: Use Interconnected Communities Network (ICN) to characterize population subgroup features. 
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "First",
+           family = "Last",
+           role = c("aut", "cre"),
+           email = "first.last@example.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Use Interconnected Communities Network (ICN) to characterize population subgroup features. 
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+Imports:
+    gplots,
+    matlab,
+    rARPACK, 
+    pracma
+Suggests: 
+    testthat (>= 3.0.0),
+    rmarkdown
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
