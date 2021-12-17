@@ -40,3 +40,4 @@ vignettes/*.pdf
 
 # Do not upload data files
 data/*
+inst/doc
