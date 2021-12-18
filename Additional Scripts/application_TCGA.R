@@ -6,6 +6,7 @@ library(parallel)
 library(rARPACK)
 library(stats)
 
+
 # --------------------------------------------
 #              Data Processing
 # --------------------------------------------
@@ -68,7 +69,6 @@ heatmap.2(reordered1000, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = je
 NICER(NICE.apply)
 
 # Apply step 2 and 3
-
 
 
 

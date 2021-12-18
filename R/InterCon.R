@@ -3,26 +3,29 @@
 #' @param mat1 community Vc
 #' @param mat2 community Vc'
 #' @param mat12 community V(c, c')
-#' @lambda0 A hyper parameter in objective function
-#' @rseq A sequence of cutoffs
-#' @nodes1 nodes of the community c
-#' @nodes2 nodes of the community c'
-#' @return result, a list of 3 elements: rbest, interEdge and updated mat12
+#' @param lambda0 A hyper parameter in objective function
+#' @param rseq A sequence of cutoffs
+#' @param nodes1 nodes of the community c
+#' @param nodes2 nodes of the community c'
+#' @return result a list of 3 elements: rbest, interEdge and updated mat12
 #' rbest is the best threshold.
 #' InterEdge is a matrix including all significant edges
 #' mat12 is the updated matrix after filtering by threshold.
 #' @export
+#' 
+#' @import matlab
 #'
-#' @examples
-#' See the vignette.
 InterCon = function(mat1, mat2, mat12, inter12, lambda0, rseq, nodes1, nodes2){
-  mat1 = mat1 - diag(mat1)
-  mat2 = mat2 -diag(mat2)
-  mat12 = mat12 - diag(mat12)
+  # mat1 = mat1 - diag(mat1)
+  # mat2 = mat2 - diag(mat2)
+  # mat12 = mat12 - diag(mat12)
+  diag(mat1) = 0
+  diag(mat2) = 0
+  diag(mat12) = 0
   obj = c()
   for(i in c(1: length(rseq))){
     vecW = mat12[abs(mat12) > rseq[i]]
-    num = sum(abs(vecW)) + sum(abs(squareform(mat1))) + sum(abs(squareform(mat2)))
+    num = matlab::sum(abs(vecW)) + matlab::sum(abs(squareform(mat1))) + matlab::sum(abs(squareform(mat2)))
     denom = length(vecW) + length(squareform(mat1)) + length(squareform(mat2))
     obj[i] = num / (denom^lambda0)
   }
