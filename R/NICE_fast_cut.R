@@ -46,15 +46,11 @@ NICE_fast = function(corr_m, thres, cutter = 1) {
   lenW = length(which(W>0))/2 # total number of edges
   
   # Values of K used for iteration
-<<<<<<< HEAD
+
   K_vec = seq(from = 2, to = (nrow(Lsp) - 1), by = cutter)
   #### time counting vectors
   t.eigen <- t.kmeans <- t.obj <- rep(0, length=nrow(Lsp) - 2)
-=======
   K_vec = seq(from = 2, to = (nrow(Lsp)-1), by = cutter)
->>>>>>> 27b688ab765ff4cf8ce424680bc0c03435e0fc0d
-  
-  t.eigen <- t.kmeans <- t.obj <- rep(0, length=nrow(Lsp)-2)
   vectors = Leig$vectors
   ncores = 4
   cl <- makeCluster(ncores)

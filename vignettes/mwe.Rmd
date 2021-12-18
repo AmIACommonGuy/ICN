@@ -11,10 +11,6 @@ vignette: >
 ```{r setup, message=F}
 library(ICN)
 source("../R/Auxiliary.R")
-# source("../R/NICE_fast_cut.R")
-# source("../R/utils.R")
-# source("../R/KLtest.R")
-# source("../R/InterCon.R")
 library(RColorBrewer)
 library(pracma)
 library(rARPACK)
@@ -176,7 +172,7 @@ image.plot(legend.only=T, zlim=range(0,1), col=colors, legend.mar = 3,
 
 ```{r}
 interCon = inRes[inRes$whether_interconnected == 1,]
-print(interCon)
+#print(interCon)
 ### Select two interconnected communities from dataframe interCon and detect
 ### interconnected edges.
 
@@ -192,6 +188,7 @@ inter12 = corr[nodes1, nodes2]
 
 result3 = InterCon(mat1, mat2, mat12, inter12, 
                    0.6, c(0.3, 0.5, 0.6, 0.8, 0.85, 0.9), nodes1, nodes2)
-print(result3)
-
+paste('best threshold r: ',result3[[1]])
+print('Interconnected edges: ')
+print(result3[[2]])
 ```

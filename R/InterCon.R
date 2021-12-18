@@ -16,9 +16,6 @@
 #' @import matlab
 #'
 InterCon = function(mat1, mat2, mat12, inter12, lambda0, rseq, nodes1, nodes2){
-  # mat1 = mat1 - diag(mat1)
-  # mat2 = mat2 - diag(mat2)
-  # mat12 = mat12 - diag(mat12)
   diag(mat1) = 0
   diag(mat2) = 0
   diag(mat12) = 0
