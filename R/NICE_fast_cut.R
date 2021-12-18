@@ -43,11 +43,7 @@ NICE_fast_cut = function(corr_m, thres, cutter = 1) {
   lenW = length(which(W>0))/2 # total number of edges
   row = nrow(Lsp)
   # Values of K used for iteration
-  if(row <= 500){
-    K_vec = seq(from = 2, to = (nrow(Lsp) - 1), by = cutter)
-  }else{
-    K_vec = seq(from = 2, to = as.integer(row / 2), by = cutter)
-  }
+  K_vec = seq(from = 2, to = (nrow(Lsp) - 1), by = cutter)
   #### time counting vectors
   t.eigen <- t.kmeans <- t.obj <- rep(0, length=nrow(Lsp) - 2)
   
