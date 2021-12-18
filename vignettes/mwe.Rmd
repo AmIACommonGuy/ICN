@@ -8,10 +8,18 @@ vignette: >
 ---
 
 ```{r setup, message=F}
-library(ICN)
+# library(ICN)
+source("../R/NICE_fast_cut.R")
+source("../R/Auxiliary.R")
+source("../R/utils.R")
+source("../R/KLtest.R")
+source("../R/InterCon.R")
+library(RColorBrewer)
 library(pracma)
+library(rARPACK)
 library(gplots)
 library(fields)
+library(parallel)
 library(matlab)
 set.seed(1)
 ```
@@ -20,9 +28,8 @@ In this vignette, we provide an example analysis starting with a correlation mat
 
 
 ## Step 1
-```{r}
+```{r, fig.height=4, fig.width=4}
 ## Simulate Two Communities (100 nodes)
-
 # Simulate true corr matrix
 true1 = matrix(0, nrow = 100, ncol = 100)
 true1[1:20,1:20] = 0.5
@@ -52,26 +59,18 @@ heatmap.2(simu1, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors
 
 # Shuffle the sample corr matrix
 shuffle_index = sample(1:100)
-simu1_shuf = simu1[shuffle_index, shuffle_index]
-heatmap.2(simu1_shuf, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
+corr = simu1[shuffle_index, shuffle_index]
+heatmap.2(corr, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
           keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none", 
           dendrogram = "none")
 
-result = NICE_fast_cut(simu1_shuf, 0.2)
-save(result , file = "examples/nice.rds")
-save(corr, file = "examples/corr.rds")
+nice = NICE_fast(corr, 0.2)
 ```
 
 ## Step 2: Identify significant connections between communities
 
 We have obtained the correlation matrix `corr.rds` and the NICE clustering output `nice.rds` from step 1. Now we compute the KL-divergence between community pair correlations and the null distribution to establish the significance of the interconnectedness between these community pairs. 
-
-```{r, eval = F}
-# If step 1 was skipped, you may read the data here: 
-nice = readRDS("examples/nice.rds")
-corr = readRDS("examples/corr.rds")
-```
 
 ### NICE post-processing
 
@@ -88,7 +87,7 @@ K.ind = nicer$K.ind
 # find community indices
 comm.ind = vector(mode = "list", length = K)
 for (ind in 1:K){
-  comm.ind[[ind]] = as.vector(which(NICE$Cindx == K.ind[ind]))
+  comm.ind[[ind]] = as.vector(which(nice$Cindx == K.ind[ind]))
 }
 
 ```
@@ -100,12 +99,12 @@ for (ind in 1:K){
 
 ```{r}
 # create a vector of singletons
-ordered.ind = NICE$Cindx[NICE$Clist]
+ordered.ind = nice$Cindx[nice$Clist]
 num.comm.ind = max(which(ordered.ind %in% K.ind))
-singles = NICE$Clist[(num.comm.ind + 1):n]  
+singles = nice$Clist[(num.comm.ind + 1):n]  
 
 # create the singleton matrix
-G.R = data[singles, singles]
+G.R = corr[singles, singles]
 diag(G.R) = 0
 true_dist = squareform(G.R) 
 ```
@@ -121,13 +120,13 @@ for (p in 1:n.pairs){
   pairs = to_matrix(pairs)
   nodes.comm1 = comm.ind[[pairs[p,1]]]
   nodes.comm2 = comm.ind[[pairs[p,2]]]
-  CCp = data[nodes.comm1, nodes.comm2] 
+  CCp = corr[nodes.comm1, nodes.comm2] 
   G.pairwise[[p]] = as.vector(CCp)     
   null = c(null, G.pairwise[[p]])
 }
 
 # write null distribution: 
-Off_2 = data[NICE$Clist[1:num.comm.ind], singles]
+Off_2 = corr[nice$Clist[1:num.comm.ind], singles]
 null = c(null, as.vector(Off_2))
 ```
 
@@ -153,7 +152,7 @@ inRes$whether_interconnected = interResult
 
 ### plot adjacency matrix
 
-```{r}
+```{r, fig.width=4, fig.height=4}
 d = max(inRes$community_two)
 A.mat = matrix(0, nrow = d, ncol = d)
 diag(A.mat) = 1
@@ -183,15 +182,15 @@ print(interCon)
 ### Select two interconnected communities from dataframe interCon and detect
 ### interconnected edges.
 
-kID1 = NICE$CID[4] # an example, 4 here means the 4th cluster in heatmap.
-kID2 = NICE$CID[5]
-nodes1 = which(NICE$Cindx == kID1)
-nodes2 = which(NICE$Cindx == kID2)
+kID1 = nice$CID[4] # an example, 4 here means the 4th cluster in heatmap.
+kID2 = nice$CID[5]
+nodes1 = which(nice$Cindx == kID1)
+nodes2 = which(nice$Cindx == kID2)
 nodecom = c(nodes1, nodes2)
-mat1 = data[nodes1, nodes1]
-mat2 = data[nodes2, nodes2]
-mat12 = data[nodecom, nodecom]
-inter12 = data[nodes1, nodes2]
+mat1 = corr[nodes1, nodes1]
+mat2 = corr[nodes2, nodes2]
+mat12 = corr[nodecom, nodecom]
+inter12 = corr[nodes1, nodes2]
 
 result3 = InterCon(mat1, mat2, mat12, inter12, 
                    0.6, c(0.3, 0.5, 0.6, 0.8, 0.85, 0.9), nodes1, nodes2)
