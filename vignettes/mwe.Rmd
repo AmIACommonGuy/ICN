@@ -17,11 +17,9 @@ set.seed(1)
 
 In this vignette, we provide an example analysis starting with a correlation matrix consisting of 100 nodes and 2 initial clusters. We will perform the 3 steps of clustering, identifying connected communities, and narrowing down the connected edges for this example. 
 
-
 ## Step 1
 ```{r}
 ## Simulate Two Communities (100 nodes)
-
 # Simulate true corr matrix
 true1 = matrix(0, nrow = 100, ncol = 100)
 true1[1:20,1:20] = 0.5
@@ -87,12 +85,10 @@ comm.ind = vector(mode = "list", length = K)
 for (ind in 1:K){
   comm.ind[[ind]] = as.vector(which(NICE$Cindx == K.ind[ind]))
 }
-
 ```
 
 
 ### Identify the singletons:
-
 
 
 ```{r}
@@ -130,7 +126,6 @@ null = c(null, as.vector(Off_2))
 
 
 ###  Compute KL-divergence
-
 
 ```{r}
 connections = lapply(G.pairwise, KLtest, null = null,

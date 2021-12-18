@@ -1,8 +1,9 @@
-#' NICE_fast_cut
+#' NICE_fast
 #'
 #' @param corr_m correlation matrix
-#' @param threshold
+#' @param thres 
 #' @param cutter A sequence jump during iteration of K, default 1.
+#' 
 #' @return Cindx: the cluster index of every non-isolated node
 #' @return CID: the cluster index of every cluster in a power 
 #' descending order. i.e. CID(1) will be the cluster index of the 
@@ -14,7 +15,6 @@
 #' @return t.overall: Time counter for NICE 
 #' @return Prp_net: evaluation index of K
 #' 
-#' @importFrom gplots heatmap.2
 #' @importFrom rARPACK eigs
 #' @importFrom parallel parSapply
 #' @importFrom stats kmeans
@@ -22,7 +22,6 @@
 #' 
 #' @export 
 #'
-#' @examples
 
 
 NICE_fast = function(corr_m, thres, cutter = 1) {

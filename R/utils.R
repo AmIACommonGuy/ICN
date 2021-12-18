@@ -6,7 +6,6 @@
 #' @return Returns a list of: K = number of clusters; 
 #' K.ind = indices of clusters
 #' @example
-#' NICER(NICE)
 #' 
 #' @export
 
