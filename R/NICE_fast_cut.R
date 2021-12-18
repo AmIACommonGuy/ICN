@@ -1,7 +1,7 @@
 #' NICE_fast_cut
 #'
 #' @param corr_m correlation matrix
-#' @param threshold
+#' @param threshold an integer threshold value between (0, 1)
 #' @param cutter A sequence jump during iteration of K, default 1.
 #' @return Cindx: the cluster index of every non-isolated node
 #' @return CID: the cluster index of every cluster in a power 
@@ -21,8 +21,6 @@
 #' @import matlab
 #' 
 #' @export 
-#'
-#' @examples
 
 
 NICE_fast = function(corr_m, thres, cutter = 1) {

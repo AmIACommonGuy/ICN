@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup}
+```{r setup, message=F}
 library(ICN)
 library(pracma)
 library(gplots)
@@ -34,7 +34,7 @@ true1[31:100,31:100] = true1[31:100,31:100] + diag(70);
 heatmap.2(true1, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
           keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", breaks=seq(0,1,0.01),
-          density.info = "none")
+          density.info = "none", dendrogram = "none")
 
 # Simulate samples based on true corr matrix, and then calculate the sample corr matrix.
 nvars = 100
@@ -47,14 +47,16 @@ samples = t(samples) # For each node (100 nodes in total), draw 50 samples.
 simu1 = cor(samples) # Get corr between nodes
 heatmap.2(simu1, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
-          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none")
+          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none", 
+          dendrogram = "none")
 
 # Shuffle the sample corr matrix
 shuffle_index = sample(1:100)
 simu1_shuf = simu1[shuffle_index, shuffle_index]
 heatmap.2(simu1_shuf, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
-          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none")
+          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none", 
+          dendrogram = "none")
 
 result = NICE_fast_cut(simu1_shuf, 0.2)
 save(result , file = "examples/nice.rds")
