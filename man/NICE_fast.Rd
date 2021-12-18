@@ -10,6 +10,8 @@ NICE_fast(corr_m, thres, cutter = 1)
 \item{corr_m}{correlation matrix}
 
 \item{cutter}{A sequence jump during iteration of K, default 1.}
+
+\item{threshold}{an integer threshold value between (0, 1)}
 }
 \value{
 Cindx: the cluster index of every non-isolated node

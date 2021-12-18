@@ -2,18 +2,18 @@
 title: "Minimum Working Example"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{mwe}
+  %\VignetteIndexEntry{Minimum Working Example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, message=F}
-# library(ICN)
-source("../R/NICE_fast_cut.R")
-source("../R/Auxiliary.R")
-source("../R/utils.R")
-source("../R/KLtest.R")
-source("../R/InterCon.R")
+library(ICN)
+# source("../R/NICE_fast_cut.R")
+# source("../R/Auxiliary.R")
+# source("../R/utils.R")
+# source("../R/KLtest.R")
+# source("../R/InterCon.R")
 library(RColorBrewer)
 library(pracma)
 library(rARPACK)
@@ -28,7 +28,7 @@ In this vignette, we provide an example analysis starting with a correlation mat
 
 
 ## Step 1
-```{r, fig.height=4, fig.width=4}
+```{r, fig.height=4, fig.width=6}
 ## Simulate Two Communities (100 nodes)
 # Simulate true corr matrix
 true1 = matrix(0, nrow = 100, ncol = 100)
@@ -152,7 +152,7 @@ inRes$whether_interconnected = interResult
 
 ### plot adjacency matrix
 
-```{r, fig.width=4, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 d = max(inRes$community_two)
 A.mat = matrix(0, nrow = d, ncol = d)
 diag(A.mat) = 1
@@ -182,8 +182,8 @@ print(interCon)
 ### Select two interconnected communities from dataframe interCon and detect
 ### interconnected edges.
 
-kID1 = nice$CID[4] # an example, 4 here means the 4th cluster in heatmap.
-kID2 = nice$CID[5]
+kID1 = nice$CID[1] # an example, 4 here means the 4th cluster in heatmap.
+kID2 = nice$CID[2]
 nodes1 = which(nice$Cindx == kID1)
 nodes2 = which(nice$Cindx == kID2)
 nodecom = c(nodes1, nodes2)

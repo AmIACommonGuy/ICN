@@ -6,7 +6,6 @@
 #' @param width bin width. Default is 0.001
 #' 
 #' @return KL distance between two distributions
-#' @examples 
 #' 
 #' @export
 

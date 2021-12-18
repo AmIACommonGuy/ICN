@@ -30,6 +30,3 @@ mat12 is the updated matrix after filtering by threshold.
 \description{
 InterCon
 }
-\examples{
-# See the vignette.
-}

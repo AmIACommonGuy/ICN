@@ -19,6 +19,3 @@ KL distance between two distributions
 \description{
 \code{KL} Calculates the KL divergence between two distributions y1 and y2
 }
-\examples{
-
-}
