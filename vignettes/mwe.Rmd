@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, message=F}
 library(ICN)
 # source("../R/NICE_fast_cut.R")
@@ -16,15 +17,20 @@ library(ICN)
 # source("../R/InterCon.R")
 library(RColorBrewer)
 library(pracma)
+library(rARPACK)
 library(gplots)
 library(fields)
+library(parallel)
+library(matlab)
 set.seed(1)
 ```
 
 In this vignette, we provide an example analysis starting with a correlation matrix consisting of 100 nodes and 2 initial clusters. We will perform the 3 steps of clustering, identifying connected communities, and narrowing down the connected edges for this example. 
 
 ## Step 1
+
 ```{r, fig.height=4, fig.width=6}
+
 ## Simulate Two Communities (100 nodes)
 # Simulate true corr matrix
 true1 = matrix(0, nrow = 100, ncol = 100)
@@ -37,7 +43,7 @@ true1[31:100,31:100] = true1[31:100,31:100] + diag(70);
 heatmap.2(true1, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
           keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", breaks=seq(0,1,0.01),
-          density.info = "none")
+          density.info = "none", dendrogram = "none")
 
 # Simulate samples based on true corr matrix, and then calculate the sample corr matrix.
 nvars = 100
@@ -50,29 +56,23 @@ samples = t(samples) # For each node (100 nodes in total), draw 50 samples.
 simu1 = cor(samples) # Get corr between nodes
 heatmap.2(simu1, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
-          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none")
+          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none", 
+          dendrogram = "none")
 
 # Shuffle the sample corr matrix
 shuffle_index = sample(1:100)
-simu1_shuf = simu1[shuffle_index, shuffle_index]
-heatmap.2(simu1_shuf, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
+corr = simu1[shuffle_index, shuffle_index]
+heatmap.2(corr, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
-          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none")
+          keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none", 
+          dendrogram = "none")
 
-result = NICE_fast_cut(simu1_shuf, 0.2)
-save(result , file = "examples/nice.rds")
-save(corr, file = "examples/corr.rds")
+nice = NICE_fast(corr, 0.2)
 ```
 
 ## Step 2: Identify significant connections between communities
 
 We have obtained the correlation matrix `corr.rds` and the NICE clustering output `nice.rds` from step 1. Now we compute the KL-divergence between community pair correlations and the null distribution to establish the significance of the interconnectedness between these community pairs. 
-
-```{r, eval = F}
-# If step 1 was skipped, you may read the data here: 
-nice = readRDS("examples/nice.rds")
-corr = readRDS("examples/corr.rds")
-```
 
 ### NICE post-processing
 
@@ -89,7 +89,7 @@ K.ind = nicer$K.ind
 # find community indices
 comm.ind = vector(mode = "list", length = K)
 for (ind in 1:K){
-  comm.ind[[ind]] = as.vector(which(NICE$Cindx == K.ind[ind]))
+  comm.ind[[ind]] = as.vector(which(nice$Cindx == K.ind[ind]))
 }
 ```
 
@@ -98,12 +98,12 @@ for (ind in 1:K){
 
 ```{r}
 # create a vector of singletons
-ordered.ind = NICE$Cindx[NICE$Clist]
+ordered.ind = nice$Cindx[nice$Clist]
 num.comm.ind = max(which(ordered.ind %in% K.ind))
-singles = NICE$Clist[(num.comm.ind + 1):n]  
+singles = nice$Clist[(num.comm.ind + 1):n]  
 
 # create the singleton matrix
-G.R = data[singles, singles]
+G.R = corr[singles, singles]
 diag(G.R) = 0
 true_dist = squareform(G.R) 
 ```
@@ -119,13 +119,13 @@ for (p in 1:n.pairs){
   pairs = to_matrix(pairs)
   nodes.comm1 = comm.ind[[pairs[p,1]]]
   nodes.comm2 = comm.ind[[pairs[p,2]]]
-  CCp = data[nodes.comm1, nodes.comm2] 
+  CCp = corr[nodes.comm1, nodes.comm2] 
   G.pairwise[[p]] = as.vector(CCp)     
   null = c(null, G.pairwise[[p]])
 }
 
 # write null distribution: 
-Off_2 = data[NICE$Clist[1:num.comm.ind], singles]
+Off_2 = corr[nice$Clist[1:num.comm.ind], singles]
 null = c(null, as.vector(Off_2))
 ```
 
@@ -148,6 +148,7 @@ inRes$whether_interconnected = interResult
 ```
 
 ### plot adjacency matrix
+
 
 ```{r, fig.width=6, fig.height=4}
 d = max(inRes$community_two)
@@ -184,15 +185,13 @@ kID2 = nice$CID[2]
 nodes1 = which(nice$Cindx == kID1)
 nodes2 = which(nice$Cindx == kID2)
 nodecom = c(nodes1, nodes2)
-mat1 = data[nodes1, nodes1]
-mat2 = data[nodes2, nodes2]
-mat12 = data[nodecom, nodecom]
-inter12 = data[nodes1, nodes2]
+mat1 = corr[nodes1, nodes1]
+mat2 = corr[nodes2, nodes2]
+mat12 = corr[nodecom, nodecom]
+inter12 = corr[nodes1, nodes2]
 
 result3 = InterCon(mat1, mat2, mat12, inter12, 
                    0.6, c(0.3, 0.5, 0.6, 0.8, 0.85, 0.9), nodes1, nodes2)
 print(result3)
 
 ```
-
-

@@ -2,16 +2,16 @@
 % Please edit documentation in R/NICE_fast_cut.R
 \name{NICE_fast}
 \alias{NICE_fast}
-\title{NICE_fast_cut}
+\title{NICE_fast}
 \usage{
 NICE_fast(corr_m, thres, cutter = 1)
 }
 \arguments{
 \item{corr_m}{correlation matrix}
 
-\item{cutter}{A sequence jump during iteration of K, default 1.}
+\item{thres}{an integer threshold value between (0, 1)}
 
-\item{threshold}{an integer threshold value between (0, 1)}
+\item{cutter}{A sequence jump during iteration of K, default 1.}
 }
 \value{
 Cindx: the cluster index of every non-isolated node
@@ -30,5 +30,5 @@ t.overall: Time counter for NICE
 Prp_net: evaluation index of K
 }
 \description{
-NICE_fast_cut
+NICE_fast
 }
