@@ -10,6 +10,8 @@ vignette: >
 ```{r setup}
 library(ICN)
 library(pracma)
+library(gplots)
+library(fields)
 set.seed(1)
 ```
 
