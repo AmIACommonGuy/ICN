@@ -24,11 +24,13 @@ browseVignettes('ICN')
 ICN
 | R/                            - all of the written R functions and scripts
   | Auxiliary.R                 - all of the helper functions (inaccessible to users)
-  | InterEdge.R                 - R package function -- identification of significant edges
+  | InterCon.R                  - R package function -- identification of significant edges
   | KLtest.R                    - R package function -- calculating and testing interconnectedness between communities using KL divergence
-  | NICE.R                      - R package function -- construct communities using K-means clustering
+  | NICE_fast_cut.R             - R package function -- construct communities using K-means clustering
   | NICE_simulation.R           - R script -- simulate data and cluster using NICE algorithm
+  | step1.R                     - R script -- execute NICE algorithm for input correlation matrix
   | step2.R                     - R script -- process NICE cluster output and perform KL divergence test between communities
+  | step3.R                     - R script -- Detect interconnected edges within two communities
   | utils.R                     - R package function -- post processing function for NICE cluster output
 | examples/                     - saved simulation data
   | corr.rds                    - simulated correlation matrix

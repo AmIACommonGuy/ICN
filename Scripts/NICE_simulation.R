@@ -8,6 +8,8 @@ library(rARPACK)
 true1 = matrix(0, nrow = 100, ncol = 100)
 true1[1:20,1:20] = 0.5
 true1[21:30,21:30] = 0.5
+true1[1:20,21:30] =0.2
+true1[21:30, 1:20] = 0.2
 true1[1:30,1:30] = true1[1:30,1:30] + 0.5*diag(30)
 true1[31:100,31:100] = true1[31:100,31:100] + diag(70);
 heatmap.2(true1, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.colors(100), 
@@ -35,10 +37,10 @@ heatmap.2(simu1_shuf, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = jet.c
           trace = "none", labRow = FALSE, labCol = FALSE, key.title = "Color Key", 
           keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none")
 
-result = NICE(simu1_shuf, 0.2)
+result = NICE_fast_cut(simu1_shuf, 0.2)
 saveRDS(result, file = "data/cluster.rds")
 saveRDS(simu1_shuf, file = "data/shuffle.rds")
-system.time(NICE(simu1_shuf, 0.2))
+system.time(NICE_fast_cut(simu1_shuf, 0.2))
 
 # Run simulation again when encounter error
 # When result$Clist has -1, code below will have error. -1 corresponds to zero row in W (Line 79).
@@ -55,25 +57,5 @@ heatmap.2(simu1_reordered, Rowv = FALSE, Colv = FALSE, margins = c(6,12), col = 
           keysize = 0.9, key.par = list(cex=0.5), key.xlab = "value", density.info = "none")
 
 
-#### dataset 500 nodes wiith 50 features 
-
-true11 = matrix(0, nrow = 500, ncol = 500)
-true11[1:150,1:150] = 0.5
-true11[151:250,151:250] = 0.5
-true11[251:300,251:300] = 0.5
-true11[1:300,1:300] = true11[1:300,1:300] + 0.5*diag(300);
-true11[301:500, 301:500] = true11[301:500,301:500] + 0.5*diag(200)
-nvars = 500;
-nobs = 50;
-L = chol(true11);
-r = t(L) 
-r = t(L) * rnorm(nvars * nobs)
-r = t(r)
-sim_corr1 = cor(r);
-sim_corr1 = sim_corr1 - diag(500)
-rand_index = sample(nvars)
-sim_corr1_shuffle = sim_corr1[rand_index,rand_index]
-c = NICE(sim_corr1_shuffle, 0.2)
-d = NICE(simu1_shuf, 0.2)
 
 

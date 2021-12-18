@@ -5,9 +5,8 @@
 #' @param NICE A list object; result from NICE
 #' @return Returns a list of: K = number of clusters; 
 #' K.ind = indices of clusters
-#' @examples
-#' 
-#' # insert example
+#' @example
+#' NICER(NICE)
 #' 
 #' @export
 
