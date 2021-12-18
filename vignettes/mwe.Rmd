@@ -10,8 +10,8 @@ vignette: >
 
 ```{r setup, message=F}
 library(ICN)
+source("../R/Auxiliary.R")
 # source("../R/NICE_fast_cut.R")
-# source("../R/Auxiliary.R")
 # source("../R/utils.R")
 # source("../R/KLtest.R")
 # source("../R/InterCon.R")
