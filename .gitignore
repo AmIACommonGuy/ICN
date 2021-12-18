@@ -30,3 +30,5 @@ vignettes/*.pdf
 data/*
 inst/doc
 .Rbuildignore
+.gitignore
+.DS_Store
