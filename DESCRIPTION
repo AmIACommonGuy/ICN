@@ -16,7 +16,9 @@ Imports:
     gplots,
     matlab,
     rARPACK, 
-    pracma
+    pracma,
+    parallel,
+    stats
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown
