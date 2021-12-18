@@ -1,0 +1,104 @@
+---
+title: "Minimum Working Example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mwe}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup}
+library(ICN)
+library(pracma)
+set.seed(1)
+```
+
+In this vignette, we provide an example analysis starting with a correlation matrix consisting of 100 nodes and 2 initial clusters. We will perform the 3 steps of clustering, identifying connected communities, and narrowing down the connected edges for this example. 
+
+
+## Step 1
+
+## Step 2: Identify significant connections between communities
+
+We have obtained the correlation matrix `corr.rds` and the NICE clustering output `nice.rds` from step 1. Now we compute the KL-divergence between community pair correlations and the null distribution to establish the significance of the interconnectedness between these community pairs. 
+
+```{r, eval = F}
+# If step 1 was skipped, you may read the data here: 
+nice = readRDS("examples/nice.rds")
+corr = readRDS("examples/corr.rds")
+```
+
+### NICE post-processing
+
+Here we count the number of communities (clusters containing more than 1 node), locate their indices, and construct a "pairs" matrix enumerating all indexed pairs of communities (ordered by size descending):
+
+```{r}
+n = dim(corr)[1]
+nicer = NICER(nice)
+
+# find number of 1+ node communities
+K = nicer$K
+K.ind = nicer$K.ind
+
+# find community indices
+comm.ind = vector(mode = "list", length = K)
+for (ind in 1:K){
+  comm.ind[[ind]] = as.vector(which(NICE$Cindx == K.ind[ind]))
+}
+
+```
+
+
+### Identify the singletons:
+
+
+
+```{r}
+# create a vector of singletons
+ordered.ind = NICE$Cindx[NICE$Clist]
+num.comm.ind = max(which(ordered.ind %in% K.ind))
+singles = NICE$Clist[(num.comm.ind + 1):n]  
+
+# create the singleton matrix
+G.R = data[singles, singles]
+diag(G.R) = 0
+true_dist = squareform(G.R) 
+```
+
+### find all pairwise communities G(Vc, Vc')
+
+```{r}
+pairs = lst_pairs(K)
+n.pairs = dim(to_matrix(pairs))[1]
+G.pairwise = vector(mode = "list", length = n.pairs)
+null = vector()
+for (p in 1:n.pairs){
+  pairs = to_matrix(pairs)
+  nodes.comm1 = comm.ind[[pairs[p,1]]]
+  nodes.comm2 = comm.ind[[pairs[p,2]]]
+  CCp = data[nodes.comm1, nodes.comm2] 
+  G.pairwise[[p]] = as.vector(CCp)     
+  null = c(null, G.pairwise[[p]])
+}
+
+# write null distribution: 
+Off_2 = data[NICE$Clist[1:num.comm.ind], singles]
+null = c(null, as.vector(Off_2))
+```
+
+
+###  Compute KL-divergence
+
+
+```{r}
+connections = lapply(G.pairwise, KLtest, null = null,
+                     true_dist = true_dist, a = 0.05)
+```
+
+
+## Step 3
+
+
+
+
+
