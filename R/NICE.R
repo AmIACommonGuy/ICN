@@ -15,6 +15,7 @@
 #' @export
 #'
 #' @examples
+#' 
 NICE = function(corr_m, thres) {
   if (corr_m[1,1] == 1) {
     W = corr_m - diag(nrow(corr_m))
