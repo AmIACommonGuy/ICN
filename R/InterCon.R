@@ -3,18 +3,20 @@
 #' @param mat1 community Vc
 #' @param mat2 community Vc'
 #' @param mat12 community V(c, c')
-#' @lambda0 A hyper parameter in objective function
-#' @rseq A sequence of cutoffs
-#' @nodes1 nodes of the community c
-#' @nodes2 nodes of the community c'
-#' @return result, a list of 3 elements: rbest, interEdge and updated mat12
+#' @param lambda0 A hyper parameter in objective function
+#' @param rseq A sequence of cutoffs
+#' @param nodes1 nodes of the community c
+#' @param nodes2 nodes of the community c'
+#' @return result a list of 3 elements: rbest, interEdge and updated mat12
 #' rbest is the best threshold.
 #' InterEdge is a matrix including all significant edges
 #' mat12 is the updated matrix after filtering by threshold.
 #' @export
+#' 
+#' @import matlab
 #'
 #' @examples
-#' See the vignette.
+#' # See the vignette.
 InterCon = function(mat1, mat2, mat12, inter12, lambda0, rseq, nodes1, nodes2){
   mat1 = mat1 - diag(mat1)
   mat2 = mat2 -diag(mat2)
