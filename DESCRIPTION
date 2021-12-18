@@ -18,7 +18,10 @@ Imports:
     rARPACK, 
     pracma,
     parallel,
-    stats
+    RColorBrewer，
+    fields，
+    stats，
+    
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
